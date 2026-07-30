@@ -10,8 +10,8 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
 // TODO(deploy): replace with your project's values, or better, render
 // these two lines server-side from env vars if you add a templating
 // step to your build. Hardcoding here is safe because both are public.
-export const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co';
-export const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+export const SUPABASE_URL = 'SUPABASE_URL';
+export const SUPABASE_ANON_KEY = 'SUPABASE_ANON_KEY';
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
