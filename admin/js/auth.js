@@ -62,7 +62,7 @@ export async function guardPage() {
 function redirectToLogin(reason) {
   const next = encodeURIComponent(location.pathname + location.search);
   const reasonParam = reason ? `&reason=${encodeURIComponent(reason)}` : '';
-  location.href = `/admin/login.html?next=${next}${reasonParam}`;
+  location.href = `/admin/login?next=${next}${reasonParam}`;
 }
 
 export async function logout() {
@@ -77,7 +77,7 @@ export async function logout() {
   } finally {
     await supabase.auth.signOut();
     cachedUser = null;
-    location.href = '/admin/login.html';
+    location.href = '/admin/login';
   }
 }
 
