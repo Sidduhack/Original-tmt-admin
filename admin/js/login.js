@@ -71,7 +71,8 @@ form?.addEventListener('submit', async (e) => {
     });
 
     if (error) {
-      showError('Signed in, but couldn\u2019t start a session locally. Please try again.');
+      console.error('[login] setSession failed:', error);
+      showError(`Signed in, but couldn\u2019t start a session locally: ${error.message || 'unknown error'}. This usually means admin/js/config.js points to a different Supabase project than your server\u2019s environment variables.`);
       setLoading(false);
       return;
     }
