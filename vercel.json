@@ -3,6 +3,7 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
+    { "source": "/", "destination": "/admin/login.html", "permanent": false },
     { "source": "/admin", "destination": "/admin/index.html", "permanent": false }
   ],
   "headers": [
@@ -24,7 +25,6 @@
   ],
   "functions": {
     "api/**/*.js": {
-      "memory": 1024,
       "maxDuration": 30
     }
   }
