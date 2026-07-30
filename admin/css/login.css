@@ -1,0 +1,158 @@
+/* =====================================================================
+   login.css — TMT OFFICIAL admin login screen
+   ===================================================================== */
+
+.login-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-shell::before,
+.login-shell::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.35;
+  z-index: 0;
+}
+.login-shell::before {
+  width: 420px; height: 420px;
+  background: var(--accent-primary);
+  top: -120px; left: -100px;
+  animation: float-a 12s ease-in-out infinite;
+}
+.login-shell::after {
+  width: 360px; height: 360px;
+  background: var(--accent-secondary);
+  bottom: -100px; right: -80px;
+  animation: float-b 14s ease-in-out infinite;
+}
+@keyframes float-a { 0%,100% { transform: translate(0,0); } 50% { transform: translate(30px, 20px); } }
+@keyframes float-b { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-25px, -15px); } }
+
+.login-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 400px;
+  padding: 40px 36px;
+  animation: card-rise 0.5s cubic-bezier(.2,.7,.3,1) both;
+}
+@keyframes card-rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+.login-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.login-brand-mark {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: var(--accent-gradient);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: #06070a;
+  font-size: 18px;
+  box-shadow: 0 4px 18px rgba(123,92,255,0.4);
+}
+.login-brand-text h1 { font-size: 17px; letter-spacing: 0.3px; }
+.login-brand-text span { font-size: 12px; color: var(--text-muted); }
+
+.login-card h2 {
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+.login-card .subtitle {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-bottom: 28px;
+}
+
+.form-field { margin-bottom: 18px; }
+.form-field label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 7px;
+  letter-spacing: 0.2px;
+}
+
+.input-wrap { position: relative; }
+.input-wrap svg {
+  position: absolute;
+  left: 14px; top: 50%;
+  transform: translateY(-50%);
+  width: 17px; height: 17px;
+  color: var(--text-dim);
+  pointer-events: none;
+}
+.input-wrap input {
+  width: 100%;
+  padding: 13px 14px 13px 42px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: var(--font-body);
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+.input-wrap input::placeholder { color: var(--text-dim); }
+.input-wrap input:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  background: rgba(123, 92, 255, 0.06);
+}
+.input-wrap .toggle-pw {
+  position: absolute;
+  right: 12px; top: 50%;
+  transform: translateY(-50%);
+  background: none; border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+}
+.input-wrap .toggle-pw:hover { color: var(--text-muted); }
+.input-wrap .toggle-pw svg { position: static; width: 17px; height: 17px; }
+
+.login-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 77, 109, 0.1);
+  border: 1px solid rgba(255, 77, 109, 0.25);
+  color: #ff8fa3;
+  font-size: 13px;
+  padding: 11px 14px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 18px;
+}
+.login-error svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+.login-submit {
+  width: 100%;
+  padding: 13px;
+  font-size: 14.5px;
+  margin-top: 6px;
+}
+
+.login-footer {
+  margin-top: 26px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+@media (max-width: 480px) {
+  .login-card { padding: 32px 24px; }
+}

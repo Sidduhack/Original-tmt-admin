@@ -1,0 +1,24 @@
+<!--
+  Reference modal shell. Dynamic modals in this app are built at runtime
+  by admin/js/ui.js (openModal / confirmDialog), which generates this
+  exact structure with `.modal-backdrop > .modal > header/body/footer`.
+  This file is kept as the canonical markup reference for anyone adding
+  a new hand-written modal.
+-->
+<div class="modal-backdrop">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Modal title</h3>
+      <button class="modal-close" data-modal-close aria-label="Close">
+        <svg data-lucide="x"></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <!-- form fields / content -->
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-modal-close>Cancel</button>
+      <button class="btn btn-primary">Save</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,152 @@
+/* =====================================================================
+   forms.css — form fields used in modals and the Settings page
+   ===================================================================== */
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.form-grid .span-2 { grid-column: 1 / -1; }
+
+.field { margin-bottom: 18px; }
+.field:last-child { margin-bottom: 0; }
+.field label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 7px;
+}
+.field .hint { font-size: 11.5px; color: var(--text-dim); margin-top: 6px; }
+.field .error-msg { font-size: 11.5px; color: var(--accent-danger); margin-top: 6px; display: none; }
+.field.invalid .error-msg { display: block; }
+.field.invalid input,
+.field.invalid textarea { border-color: var(--accent-danger) !important; }
+
+.input, textarea.input, select.input {
+  width: 100%;
+  padding: 11px 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 13.5px;
+  font-family: var(--font-body);
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+.input::placeholder { color: var(--text-dim); }
+.input:focus, textarea.input:focus, select.input:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  background: rgba(123, 92, 255, 0.05);
+}
+textarea.input { resize: vertical; min-height: 90px; line-height: 1.5; }
+select.input { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239297AC'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 34px; }
+
+/* Checkbox / toggle */
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+.checkbox-row input[type="checkbox"] { display: none; }
+.checkbox-box {
+  width: 20px; height: 20px;
+  border-radius: 6px;
+  border: 1.5px solid var(--border-glass-strong);
+  background: rgba(255,255,255,0.03);
+  display: flex; align-items: center; justify-content: center;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+.checkbox-box svg { width: 13px; height: 13px; opacity: 0; transform: scale(0.5); transition: all var(--transition-fast); color: #06070a; }
+.checkbox-row input:checked + .checkbox-box {
+  background: var(--accent-gradient);
+  border-color: transparent;
+}
+.checkbox-row input:checked + .checkbox-box svg { opacity: 1; transform: scale(1); }
+.checkbox-label { font-size: 13.5px; color: var(--text-primary); }
+.checkbox-label span { display: block; font-size: 12px; color: var(--text-dim); margin-top: 1px; }
+
+/* Toggle switch (settings theme etc.) */
+.switch { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+.switch input { display: none; }
+.switch-track {
+  position: absolute; inset: 0;
+  background: rgba(255,255,255,0.1);
+  border-radius: 999px;
+  transition: background var(--transition-fast);
+  cursor: pointer;
+}
+.switch-track::after {
+  content: '';
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform var(--transition-fast);
+}
+.switch input:checked + .switch-track { background: var(--accent-gradient); }
+.switch input:checked + .switch-track::after { transform: translateX(20px); }
+
+/* File drop zone */
+.dropzone {
+  border: 1.5px dashed var(--border-glass-strong);
+  border-radius: var(--radius-md);
+  padding: 28px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+  color: var(--text-muted);
+}
+.dropzone:hover, .dropzone.dragover { border-color: var(--accent-primary); background: rgba(123,92,255,0.05); }
+.dropzone svg { width: 30px; height: 30px; margin: 0 auto 10px; color: var(--text-dim); }
+.dropzone strong { color: var(--text-primary); }
+.dropzone input[type="file"] { display: none; }
+.dropzone .file-preview { margin-top: 12px; font-size: 12.5px; color: var(--accent-secondary); }
+
+.upload-progress {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  overflow: hidden;
+  margin-top: 10px;
+}
+.upload-progress-bar {
+  height: 100%;
+  background: var(--accent-gradient);
+  width: 0%;
+  transition: width var(--transition-fast);
+}
+
+/* Image preview thumbnail (settings uploads) */
+.image-preview-row { display: flex; align-items: center; gap: 14px; }
+.image-preview-box {
+  width: 64px; height: 64px;
+  border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-glass);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.image-preview-box img { width: 100%; height: 100%; object-fit: cover; }
+.image-preview-box svg { width: 22px; height: 22px; color: var(--text-dim); }
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.settings-section { margin-bottom: 28px; }
+.settings-section h3 {
+  font-size: 14px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-glass);
+}

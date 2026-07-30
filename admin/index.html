@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TMT OFFICIAL · Admin Panel</title>
+<meta name="robots" content="noindex, nofollow" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/components.css" />
+<link rel="stylesheet" href="css/dashboard.css" />
+<link rel="stylesheet" href="css/tables.css" />
+<link rel="stylesheet" href="css/forms.css" />
+<link rel="stylesheet" href="css/modal.css" />
+<link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+
+<div class="page-loader" id="page-loader"><span class="spinner"></span></div>
+
+<div class="app-shell hidden" id="app-shell">
+  <div id="sidebar-slot"></div>
+
+  <div class="main-area" id="main-area">
+    <div id="navbar-slot"></div>
+    <main class="content" id="content"></main>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<!-- Icons -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<!-- Charts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+
+<script type="module">
+  import { guardPage } from './js/auth.js';
+  import { initShell } from './js/sidebar.js';
+  import { startRouter } from './js/dashboard.js';
+  import { toast } from './js/notifications.js';
+
+  (async function bootstrap() {
+    const user = await guardPage();
+    if (!user) return; // guardPage already redirected to login.html
+
+    await initShell();
+    startRouter();
+
+    window.addEventListener('tmt:toast-info', (e) => {
+      toast.info(e.detail.title, e.detail.message);
+    });
+
+    document.getElementById('page-loader')?.remove();
+    document.getElementById('app-shell').classList.remove('hidden');
+  })();
+</script>
+</body>
+</html>

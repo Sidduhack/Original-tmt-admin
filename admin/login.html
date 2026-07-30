@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sign In · TMT OFFICIAL Admin</title>
+<meta name="robots" content="noindex, nofollow" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/components.css" />
+<link rel="stylesheet" href="css/login.css" />
+<link rel="stylesheet" href="css/modal.css" />
+<link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+
+<div class="page-loader" id="page-loader"><span class="spinner"></span></div>
+
+<div class="login-shell">
+  <div class="glass-card login-card">
+    <div class="login-brand">
+      <div class="login-brand-mark">T</div>
+      <div class="login-brand-text">
+        <h1>TMT OFFICIAL</h1>
+        <span>Admin Panel</span>
+      </div>
+    </div>
+
+    <h2>Welcome back</h2>
+    <p class="subtitle">Sign in to manage videos, subscribers, and site settings.</p>
+
+    <div class="login-error hidden" id="login-error" role="alert"></div>
+
+    <form id="login-form" novalidate>
+      <div class="form-field">
+        <label for="email">Email</label>
+        <div class="input-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0-.828.672-1.5 1.5-1.5h16.5c.828 0 1.5.672 1.5 1.5v10.5c0 .828-.672 1.5-1.5 1.5H3.75a1.5 1.5 0 01-1.5-1.5V6.75zm1.5-.75L12 12l8.25-6"/></svg>
+          <input type="email" id="email" name="email" placeholder="you@tmtofficial.com" autocomplete="username" required />
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="password">Password</label>
+        <div class="input-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
+          <input type="password" id="password" name="password" placeholder="••••••••" autocomplete="current-password" required />
+          <button type="button" class="toggle-pw" id="toggle-password" aria-label="Show password" tabindex="-1">
+            <svg data-lucide="eye"></svg>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary login-submit" id="login-submit">Sign In</button>
+    </form>
+
+    <div class="login-footer">
+      Protected area · TMT OFFICIAL Admin
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script>window.lucide && window.lucide.createIcons();</script>
+<script type="module" src="js/login.js"></script>
+</body>
+</html>
