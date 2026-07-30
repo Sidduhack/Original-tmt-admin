@@ -44,18 +44,31 @@
   import { toast } from './js/notifications.js';
 
   (async function bootstrap() {
-    const user = await guardPage();
-    if (!user) return; // guardPage already redirected to login.html
+    try {
+      const user = await guardPage();
+      if (!user) return; // guardPage already redirected to login.html
 
-    await initShell();
-    startRouter();
+      await initShell();
+      startRouter();
 
-    window.addEventListener('tmt:toast-info', (e) => {
-      toast.info(e.detail.title, e.detail.message);
-    });
+      window.addEventListener('tmt:toast-info', (e) => {
+        toast.info(e.detail.title, e.detail.message);
+      });
 
-    document.getElementById('page-loader')?.remove();
-    document.getElementById('app-shell').classList.remove('hidden');
+      document.getElementById('page-loader')?.remove();
+      document.getElementById('app-shell').classList.remove('hidden');
+    } catch (err) {
+      console.error('[bootstrap] failed to load admin panel:', err);
+      const loader = document.getElementById('page-loader');
+      if (loader) {
+        loader.innerHTML = `
+          <div style="text-align:center;color:#e5e7eb;font-family:Inter,sans-serif;max-width:360px;padding:24px;">
+            <div style="font-size:15px;font-weight:600;margin-bottom:8px;">Couldn't load the admin panel</div>
+            <div style="font-size:13px;opacity:0.75;margin-bottom:16px;">${(err && err.message) ? err.message.replace(/</g, '&lt;') : 'An unexpected error occurred.'}</div>
+            <button onclick="location.reload()" style="padding:8px 16px;border-radius:8px;border:none;background:#3b82f6;color:#fff;font-size:13px;cursor:pointer;">Reload</button>
+          </div>`;
+      }
+    }
   })();
 </script>
 </body>
