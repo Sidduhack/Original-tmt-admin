@@ -23,12 +23,14 @@ create index if not exists idx_subscribers_email on public.subscribers (email);
 -- feedback
 -- ---------------------------------------------------------------------
 create table if not exists public.feedback (
-  id          uuid primary key default uuid_generate_v4(),
-  name        text not null,
-  email       text,
-  message     text not null,
-  is_read     boolean not null default false,
-  created_at  timestamptz not null default now()
+  id            uuid primary key default uuid_generate_v4(),
+  name          text not null,
+  email         text,
+  message       text not null,
+  is_read       boolean not null default false,
+  reply_message text,
+  replied_at    timestamptz,
+  created_at    timestamptz not null default now()
 );
 create index if not exists idx_feedback_created_at on public.feedback (created_at desc);
 create index if not exists idx_feedback_is_read on public.feedback (is_read);
