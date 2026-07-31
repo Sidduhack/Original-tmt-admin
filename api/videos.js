@@ -1,15 +1,21 @@
 // api/videos.js
 //
-// GET    /api/videos?search=&page=&pageSize=   → paginated list
-// POST   /api/videos                            → create a new (unpublished) video
-// PATCH  /api/videos?id=<uuid>                  → update a video's fields
+// GET    /api/videos?search=&page=&pageSize=          → paginated list
+// POST   /api/videos                                   → create a new (unpublished) video
+// POST   /api/videos?action=publish   Body: { id, sendEmail } → publish + optional broadcast
+// POST   /api/videos?action=send-update Body: { id }    → re-send the "new video" broadcast
+// PATCH  /api/videos?id=<uuid>                          → update a video's fields
+// DELETE /api/videos?id=<uuid>                          → delete a video
 //
-// Publishing (with optional subscriber email blast) is handled by
-// /api/publish-video.js. Deletion is handled by /api/delete-video.js.
+// Publishing, deletion, and broadcast re-sends used to be separate
+// serverless functions (publish-video.js, delete-video.js, send-update.js).
+// They're consolidated here to stay under Vercel Hobby's 12-function cap.
 
 import { supabaseAdmin } from './_lib/supabaseAdmin.js';
 import { methodGuard } from './_lib/http.js';
 import { requireAuth } from './_lib/auth.js';
+import { broadcastNewVideo } from './_lib/broadcast.js';
+import { checkRateLimit } from './_lib/rateLimiter.js';
 import {
   isNonEmptyString,
   isValidYoutubeUrl,
@@ -24,10 +30,13 @@ export default async function handler(req, res) {
   if (!auth) return;
 
   if (req.method === 'GET') return handleList(req, res);
+  if (req.method === 'POST' && req.query.action === 'publish') return handlePublish(req, res);
+  if (req.method === 'POST' && req.query.action === 'send-update') return handleSendUpdate(req, res, auth);
   if (req.method === 'POST') return handleCreate(req, res);
   if (req.method === 'PATCH') return handleUpdate(req, res);
+  if (req.method === 'DELETE') return handleDelete(req, res);
 
-  return methodGuard(req, res, ['GET', 'POST', 'PATCH']);
+  return methodGuard(req, res, ['GET', 'POST', 'PATCH', 'DELETE']);
 }
 
 async function handleList(req, res) {
@@ -124,3 +133,71 @@ async function handleUpdate(req, res) {
 
   res.status(200).json({ video: data });
 }
+
+async function handleDelete(req, res) {
+  const { id } = req.query;
+  if (!isUuid(id)) return res.status(400).json({ error: 'A valid video id is required.' });
+
+  const { error } = await supabaseAdmin.from('videos').delete().eq('id', id);
+
+  if (error) {
+    console.error('[videos:delete]', error);
+    return res.status(500).json({ error: 'Failed to delete video.' });
+  }
+
+  res.status(200).json({ success: true });
+}
+
+async function handlePublish(req, res) {
+  const { id, sendEmail } = req.body || {};
+  if (!isUuid(id)) return res.status(400).json({ error: 'A valid video id is required.' });
+
+  const { data: video, error: fetchErr } = await supabaseAdmin
+    .from('videos')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (fetchErr || !video) {
+    return res.status(404).json({ error: 'Video not found.' });
+  }
+
+  const { data: updated, error: updateErr } = await supabaseAdmin
+    .from('videos')
+    .update({
+      published: true,
+      published_at: video.published_at || new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (updateErr) {
+    console.error('[videos:publish]', updateErr);
+    return res.status(500).json({ error: 'Failed to publish video.' });
+  }
+
+  let emailResult = null;
+  if (sendEmail === true) {
+    emailResult = await broadcastNewVideo(updated);
+  }
+
+  res.status(200).json({ video: updated, emailResult });
+}
+
+async function handleSendUpdate(req, res, auth) {
+  const rl = checkRateLimit(`send-update:${auth.user.id}`, 5, 5 * 60_000);
+  if (!rl.allowed) {
+    return res.status(429).json({ error: 'Please wait a few minutes before sending another broadcast.' });
+  }
+
+  const { id } = req.body || {};
+  if (!isUuid(id)) return res.status(400).json({ error: 'A valid id is required.' });
+
+  const { data: video, error } = await supabaseAdmin.from('videos').select('*').eq('id', id).single();
+  if (error || !video) return res.status(404).json({ error: 'Video not found.' });
+
+  const result = await broadcastNewVideo(video);
+  res.status(200).json({ result });
+    }
