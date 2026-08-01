@@ -42,27 +42,40 @@ export async function broadcastNewVideo(video) {
   }
 
   let failed = 0;
+  const failureSamples = [];
   const batches = chunk(emails, BATCH_SIZE);
 
   for (const batch of batches) {
     const results = await Promise.all(
-      batch.map((email) => {
+      batch.map(async (email) => {
         const unsubscribeUrl = `${siteUrl}/unsubscribe?email=${encodeURIComponent(email)}`;
         const html = newVideoEmailTemplate({ video, settings, unsubscribeUrl });
-        return sendEmail({
+        const result = await sendEmail({
           to: email,
           subject: '🔥 New TMT OFFICIAL Video',
           html,
         });
+        return { email, ...result };
       })
     );
-    failed += results.filter((r) => !r.success).length;
+    for (const r of results) {
+      if (!r.success) {
+        failed += 1;
+        if (failureSamples.length < 3) failureSamples.push(`${r.email}: ${r.error || 'unknown error'}`);
+      }
+    }
   }
 
   const status = failed === 0 ? 'sent' : failed === emails.length ? 'failed' : 'partial';
-  await logSentVideo(video.id, emails.length - failed, status, null);
+  await logSentVideo(video.id, emails.length - failed, status, failureSamples.join(' | ') || null);
 
-  return { success: failed < emails.length, recipients: emails.length - failed, failed };
+  return {
+    success: failed < emails.length,
+    recipients: emails.length - failed,
+    failed,
+    totalSubscribers: emails.length,
+    failureSamples,
+  };
 }
 
 async function logSentVideo(videoId, recipientsCount, status, errorMessage) {
