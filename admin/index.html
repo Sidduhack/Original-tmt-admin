@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="/admin/css/components.css" />
-<link rel="stylesheet" href="/admin/css/dashboard.css" />
-<link rel="stylesheet" href="/admin/css/tables.css" />
-<link rel="stylesheet" href="/admin/css/forms.css" />
-<link rel="stylesheet" href="/admin/css/modal.css" />
-<link rel="stylesheet" href="/admin/css/responsive.css" />
+<link rel="stylesheet" href="css/components.css" />
+<link rel="stylesheet" href="css/dashboard.css" />
+<link rel="stylesheet" href="css/tables.css" />
+<link rel="stylesheet" href="css/forms.css" />
+<link rel="stylesheet" href="css/modal.css" />
+<link rel="stylesheet" href="css/responsive.css" />
 </head>
 <body>
 
@@ -38,37 +38,24 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
 
 <script type="module">
-  import { guardPage } from '/admin/js/auth.js';
-  import { initShell } from '/admin/js/sidebar.js';
-  import { startRouter } from '/admin/js/dashboard.js';
-  import { toast } from '/admin/js/notifications.js';
+  import { guardPage } from './js/auth.js';
+  import { initShell } from './js/sidebar.js';
+  import { startRouter } from './js/dashboard.js';
+  import { toast } from './js/notifications.js';
 
   (async function bootstrap() {
-    try {
-      const user = await guardPage();
-      if (!user) return; // guardPage already redirected to login.html
+    const user = await guardPage();
+    if (!user) return; // guardPage already redirected to login.html
 
-      await initShell();
-      startRouter();
+    await initShell();
+    startRouter();
 
-      window.addEventListener('tmt:toast-info', (e) => {
-        toast.info(e.detail.title, e.detail.message);
-      });
+    window.addEventListener('tmt:toast-info', (e) => {
+      toast.info(e.detail.title, e.detail.message);
+    });
 
-      document.getElementById('page-loader')?.remove();
-      document.getElementById('app-shell').classList.remove('hidden');
-    } catch (err) {
-      console.error('[bootstrap] failed to load admin panel:', err);
-      const loader = document.getElementById('page-loader');
-      if (loader) {
-        loader.innerHTML = `
-          <div style="text-align:center;color:#e5e7eb;font-family:Inter,sans-serif;max-width:360px;padding:24px;">
-            <div style="font-size:15px;font-weight:600;margin-bottom:8px;">Couldn't load the admin panel</div>
-            <div style="font-size:13px;opacity:0.75;margin-bottom:16px;">${(err && err.message) ? err.message.replace(/</g, '&lt;') : 'An unexpected error occurred.'}</div>
-            <button onclick="location.reload()" style="padding:8px 16px;border-radius:8px;border:none;background:#3b82f6;color:#fff;font-size:13px;cursor:pointer;">Reload</button>
-          </div>`;
-      }
-    }
+    document.getElementById('page-loader')?.remove();
+    document.getElementById('app-shell').classList.remove('hidden');
   })();
 </script>
 </body>
