@@ -337,7 +337,7 @@ function openPublishModal(id) {
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner"></span> Publishing…';
     try {
-      const res = await apiFetch('/publish-video', { method: 'POST', body: { id, sendEmail } });
+      const res = await apiFetch('/videos?action=publish', { method: 'POST', body: { id, sendEmail } });
       closeModal();
       if (sendEmail && res.emailResult) {
         const r = res.emailResult;
@@ -376,7 +376,7 @@ async function handleDelete(id) {
   if (!ok) return;
 
   try {
-    await apiFetch(`/delete-video?id=${id}`, { method: 'DELETE' });
+    await apiFetch(`/videos?id=${id}`, { method: 'DELETE' });
     toast.success('Video deleted');
     await load();
   } catch (err) {
