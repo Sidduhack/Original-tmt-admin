@@ -40,21 +40,29 @@ export async function guardPage() {
       headers: { Authorization: `Bearer ${session.access_token}` },
     });
     if (!res.ok) {
-      redirectToLogin();
+      const body = await res.json().catch(() => ({}));
+      // Critical: clear the locally cached session before redirecting.
+      // Otherwise login.html sees a "session" still sitting in
+      // localStorage, immediately bounces back to index.html, which
+      // rejects it again — an infinite redirect loop.
+      await supabase.auth.signOut().catch(() => {});
+      redirectToLogin(body.error);
       return null;
     }
     const body = await res.json();
     cachedUser = body.user;
     return body.user;
   } catch {
+    await supabase.auth.signOut().catch(() => {});
     redirectToLogin();
     return null;
   }
 }
 
-function redirectToLogin() {
+function redirectToLogin(reason) {
   const next = encodeURIComponent(location.pathname + location.search);
-  location.href = `/admin/login.html?next=${next}`;
+  const reasonParam = reason ? `&reason=${encodeURIComponent(reason)}` : '';
+  location.href = `/admin/login.html?next=${next}${reasonParam}`;
 }
 
 export async function logout() {
@@ -102,6 +110,7 @@ export async function apiFetch(path, options = {}) {
 
   if (res.status === 401 || res.status === 403) {
     if (res.status === 401) {
+      await supabase.auth.signOut().catch(() => {});
       redirectToLogin();
     }
     const body = await res.json().catch(() => ({}));

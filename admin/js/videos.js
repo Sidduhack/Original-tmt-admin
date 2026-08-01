@@ -340,7 +340,17 @@ function openPublishModal(id) {
       const res = await apiFetch('/publish-video', { method: 'POST', body: { id, sendEmail } });
       closeModal();
       if (sendEmail && res.emailResult) {
-        toast.success('Video published', `Emailed ${res.emailResult.recipients || 0} subscriber(s).`);
+        const r = res.emailResult;
+        if (r.failed > 0) {
+          toast.error(
+            `Sent to ${r.recipients}/${r.totalSubscribers} subscribers`,
+            r.failureSamples?.length
+              ? `${r.failureSamples[0]}${r.failed > 1 ? ` (+${r.failed - 1} more failed)` : ''}`
+              : 'Some emails failed to send — check your email provider configuration.'
+          );
+        } else {
+          toast.success('Video published', `Emailed ${r.recipients || 0} subscriber(s).`);
+        }
       } else {
         toast.success('Video published');
       }
