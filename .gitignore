@@ -1,0 +1,15 @@
+# Environment variables — real secrets never belong in git.
+# Only .env.example (placeholder values) should be committed.
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+
+# Vercel
+.vercel
+
+# OS/editor cruft
+.DS_Store
+*.log
