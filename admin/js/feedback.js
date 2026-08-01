@@ -162,13 +162,13 @@ function openViewModal(item) {
 
       <div class="field" style="margin-top:22px;">
         <label for="reply-box">Reply</label>
-        <textarea class="input" id="reply-box" placeholder="Write your reply…">${item.reply_message ? escapeHTML(item.reply_message) : ''}</textarea>
-        <p class="hint" id="reply-hint">${item.replied_at ? `Last replied ${formatDateTime(item.replied_at)}. Sending again will email them a new message.` : `Sends an email to ${escapeHTML(item.email || '')}.`}</p>
+        <textarea class="input" id="reply-box" placeholder="Reply sending isn't connected yet — draft your response here."></textarea>
+        <p class="hint">Reply delivery isn't wired to an outbound channel yet. Hook this button up to your support inbox or the email provider once ready.</p>
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" data-modal-close>Close</button>
-      <button class="btn btn-primary" id="reply-send-btn" ${item.email ? '' : 'disabled'}><svg data-lucide="send"></svg> Reply</button>
+      <button class="btn btn-primary" id="reply-placeholder-btn"><svg data-lucide="send"></svg> Reply</button>
     </div>
   `, { size: 'lg' });
   refreshIcons();
@@ -177,29 +177,8 @@ function openViewModal(item) {
     toggleRead(item.id, true, { silent: true });
   }
 
-  const replyBtn = modal.querySelector('#reply-send-btn');
-  replyBtn.addEventListener('click', async () => {
-    const box = modal.querySelector('#reply-box');
-    const message = box.value.trim();
-    if (!message) {
-      toast.error('Write a reply first', 'The reply message can\'t be empty.');
-      return;
-    }
-
-    replyBtn.disabled = true;
-    replyBtn.textContent = 'Sending…';
-
-    try {
-      await apiFetch('/feedback?action=reply', { method: 'POST', body: { id: item.id, message } });
-      toast.success('Reply sent', `Emailed ${item.email}.`);
-      closeModal();
-      await load();
-    } catch (err) {
-      toast.error('Failed to send reply', err.message);
-      replyBtn.disabled = false;
-      replyBtn.innerHTML = '<svg data-lucide="send"></svg> Reply';
-      refreshIcons();
-    }
+  modal.querySelector('#reply-placeholder-btn').addEventListener('click', () => {
+    toast.info('Reply not connected', 'Wire this button up to your email provider to send replies.');
   });
 }
 

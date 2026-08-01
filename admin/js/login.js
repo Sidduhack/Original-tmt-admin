@@ -71,8 +71,7 @@ form?.addEventListener('submit', async (e) => {
     });
 
     if (error) {
-      console.error('[login] setSession failed:', error);
-      showError(`Signed in, but couldn\u2019t start a session locally: ${error.message || 'unknown error'}. This usually means admin/js/config.js points to a different Supabase project than your server\u2019s environment variables.`);
+      showError('Signed in, but couldn\u2019t start a session locally. Please try again.');
       setLoading(false);
       return;
     }
@@ -87,7 +86,7 @@ form?.addEventListener('submit', async (e) => {
 function redirectAfterLogin() {
   const params = new URLSearchParams(location.search);
   const next = params.get('next');
-  location.href = next && next.startsWith('/admin') ? next : '/admin';
+  location.href = next && next.startsWith('/admin') ? next : '/admin/index.html';
 }
 
 function showError(msg) {
